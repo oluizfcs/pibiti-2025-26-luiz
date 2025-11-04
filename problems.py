@@ -4,13 +4,28 @@ import json
 api = ZabbixAPI(url="localhost/zabbix")
 api.login(user="Admin", password="zabbix")
 
+hosts = api.host.get(
+    output=["status"]
+)
+
+# print(json.dumps(hosts, indent=4))
+
+enabled_hostids = []
+
+for host in hosts:
+    if host["status"] == "0":
+        enabled_hostids.append(host["hostid"])
+
+# print(enabled_hostids)
+
 problems = api.problem.get(
+    hostids=enabled_hostids,
     output=[
         "objectid",
         "name",
         "severity"
     ],
-    source=0,
+    source=0
 )
 
 # print(json.dumps(problems, indent=4))
