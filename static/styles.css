@@ -1,0 +1,15 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    text-align: justify;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
