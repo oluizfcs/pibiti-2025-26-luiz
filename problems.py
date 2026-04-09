@@ -1,5 +1,4 @@
 from zabbix_utils import ZabbixAPI
-import json
 from datetime import datetime
 import constants
 
@@ -18,9 +17,13 @@ class ZabbixService:
         self.api = ZabbixAPI(url="localhost/zabbix")
         self.api.login(token=constants.ZABBIX_API_KEY)
     
-    def get_problems(self):
+    def get_problems(self, hostids = None):
+        
+        if hostids == None:
+            hostids = self._get_enabled_hosts_ids()
+            
         problems = self.api.problem.get(
-            hostids=self._get_enabled_hosts_ids(),
+            hostids=hostids,
             output=[
                 "objectid",
                 "name",
@@ -38,6 +41,54 @@ class ZabbixService:
         
         return problems
     
+    def get_hosts_summary(self):
+        hosts = self.api.host.get(output=["status", "name"])
+        enabled_hosts = {h["hostid"]: {"hostid": h["hostid"], "name": h["name"], "problem_count": 0, "problem_count_unacknowledged": 0, "highest_severity": 0} for h in hosts if h["status"] == "0"}
+        
+        hosts_interfaces = self.api.hostinterface.get(output=["hostid", "ip", "port", "available"])
+        
+        for interface in hosts_interfaces:
+            if interface["hostid"] in enabled_hosts:
+                enabled_hosts[interface["hostid"]]["interface"] = interface
+        
+        if not enabled_hosts:
+            return []
+
+        problems = self.api.problem.get(
+            hostids=list(enabled_hosts.keys()),
+            output=["objectid", "severity", "acknowledged"],
+            source=0,
+            suppressed=False
+        )
+
+        objectids = [p["objectid"] for p in problems]
+        if objectids:
+            triggers = self.api.trigger.get(
+                triggerids=objectids,
+                output=["triggerid"],
+                selectHosts=["hostid"]
+            )
+
+            trigger_to_hosts = {}
+            for trigger in triggers:
+                trigger_to_hosts[trigger["triggerid"]] = [h["hostid"] for h in trigger["hosts"]]
+
+            for problem in problems:
+                severity = int(problem["severity"])
+                triggerid = problem["objectid"]
+                acknowledged = problem["acknowledged"] == "1"
+                hostids = trigger_to_hosts.get(triggerid, [])
+                for hostid in hostids:
+                    if hostid in enabled_hosts:
+                        enabled_hosts[hostid]["problem_count"] += 1
+                        if not acknowledged:
+                            enabled_hosts[hostid]["problem_count_unacknowledged"] += 1
+                        if severity > enabled_hosts[hostid]["highest_severity"]:
+                            enabled_hosts[hostid]["highest_severity"] = severity
+
+        sorted_hosts = sorted(enabled_hosts.values(), key=lambda h: (h["highest_severity"], h["problem_count"]), reverse=True)
+        return sorted_hosts
+
     def _get_enabled_hosts_ids(self):
         hosts = self.api.host.get(output=["status"])
         enabled_hostids = []

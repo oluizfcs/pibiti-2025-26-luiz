@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado da infraestrutura</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Página inicial</a></li>
+            <li><a href="/hosts" class="active">Hosts</a></li>
+            <li><a href="http://localhost/zabbix" target="_blank"
+                    style="display: flex; align-items: center; gap: 6px;">Zabbix <svg xmlns="http://www.w3.org/2000/svg"
+                        width="14" aria-hidden="true" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg></a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="hosts-summary" class="summary-card">
+            Carregando lista de hosts...
+        </section>
+        <dialog id="modal" closedby="any">
+            <h1>Host Name</h1>
+            <p>IP:</p>
+            <p>Porta:</p>
+            <div id="host-summary">Carregando situação...</div>
+            <br><br>
+            <button style="width: 100%;" class="btn-check"
+                onclick="document.getElementById('modal').close()">Fechar</button>
+        </dialog>
+    </main>
+    <script src="/static/script.js"></script>
+</body>
+
+<style>
+    #host-summary {
+        box-shadow: inset 0px 0px 20px 5px #dddddd;
+        border-radius: 15px;
+        padding: 1em;
+    }
+</style>
+
+</html>
