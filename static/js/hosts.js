@@ -1,31 +1,4 @@
-const textSection = document.getElementById("infrastructure-summary");
 const hostsSection = document.getElementById("hosts-summary");
-
-async function getResponse(newResponse) {
-    try {
-        const response = await fetch("/problems", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: `{"new_response":${newResponse}}`
-        });
-
-        const data = await response.json();
-
-        return data.response
-
-    } catch (error) {
-        textSection.textContent = "Não foi possível analisar a infraestrutura no momento, tente novamente mais tarde.";
-    }
-}
-
-async function updateText() {
-    textSection.style.display = "block";
-    textSection.textContent = "Analisando...";
-
-    response = await getResponse(false);
-
-    textSection.innerHTML = marked.parse(response);
-}
 
 async function updateHostsSummary() {
     try {
@@ -55,7 +28,8 @@ async function updateHostsSummary() {
 
         hosts.forEach(host => {
             const tr = document.createElement("tr");
-            
+            tr.classList.add("clickable-tr");
+
             tr.classList.add(`severity-${host.highest_severity}`);
 
             switch (host.highest_severity) {
@@ -68,16 +42,16 @@ async function updateHostsSummary() {
                 case 2:
                     host.highest_severity = 'Aviso';
                     break;
-                    case 3:
+                case 3:
                     host.highest_severity = 'Média';
                     break;
-                    case 4:
+                case 4:
                     host.highest_severity = 'Alta';
                     break;
                 case 5:
                     host.highest_severity = 'Desastre';
                     break;
-                }
+            }
 
             tr.innerHTML = `
             <td>${host.name}</td>
@@ -85,13 +59,13 @@ async function updateHostsSummary() {
             <td>${host.problem_count_unacknowledged}</td>
             <td>${host.highest_severity}</td>
             `;
-    
+
             tbody.append(tr);
 
             const modal = document.getElementById("modal");
             const hostSummaryDiv = modal.querySelector("div");
 
-            modal.classList.add("summary-card");
+            modal.classList.add("card");
             modal.style.maxWidth = "50%";
             modal.style.maxHeight = "70%";
 
@@ -111,7 +85,7 @@ async function updateHostsSummary() {
         });
 
         table.append(tbody);
-        
+
         hostsSection.innerHTML = "";
         hostsSection.append(table);
     } catch (error) {
@@ -128,36 +102,4 @@ async function getHostExplanation(element, hostid) {
     element.innerHTML = marked.parse(data.response);
 }
 
-if (hostsSection) {
-    updateHostsSummary();
-}
-
-const overviewSection = document.getElementById("problems-overview");
-if (overviewSection) {
-    updateProblemsOverview();
-}
-
-async function updateProblemsOverview() {
-    try {
-        const response = await fetch("/hosts_summary");
-        const hosts = await response.json();
-        
-        let total = 0;
-        let unack = 0;
-
-        if (hosts && hosts.length > 0) {
-            hosts.forEach(h => {
-                total += h.problem_count;
-                unack += h.problem_count_unacknowledged;
-            });
-        }
-        
-        document.getElementById("total-problems-count").textContent = total;
-        document.getElementById("unack-problems-count").textContent = unack;
-        
-        overviewSection.style.display = "flex";
-        
-    } catch (e) {
-        console.error("Erro ao tentar ler o resumo de problemas", e);
-    }
-}
+updateHostsSummary();

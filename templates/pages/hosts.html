@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section id="hosts-summary" class="card">
+        Carregando lista de hosts...
+    </section>
+    <dialog id="modal" closedby="any">
+        <h1>Host Name</h1>
+        <p>IP:</p>
+        <p>Porta:</p>
+        <div id="host-summary">Carregando situação...</div>
+        <br><br>
+        <button style="width: 100%;" class="btn-check"
+            onclick="document.getElementById('modal').close()">Fechar</button>
+    </dialog>
+
+    <style>
+        #host-summary {
+            box-shadow: inset 0px 0px 20px 5px #dddddd;
+            border-radius: 15px;
+            padding: 1em;
+        }
+    </style>
+
+    <script src="static/js/hosts.js"></script>
+{% endblock %}

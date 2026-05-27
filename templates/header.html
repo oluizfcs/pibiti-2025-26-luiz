@@ -1,0 +1,19 @@
+<nav>
+    <ul>
+        <li><a href="/" class="{{ 'active' if request.url.path == '/' else '' }}">Página inicial</a></li>
+        <li><a href="/problems" class="{{ 'active' if request.url.path == '/problems' else '' }}">Problemas</a></li>
+        <li><a href="/hosts" class="{{ 'active' if request.url.path == '/hosts' else '' }}">Hosts</a></li>
+        <li><a href="/termos" class="{{ 'active' if request.url.path == '/termos' else '' }}">Termos</a></li>
+        <li>
+            <a href="http://192.168.100.8/zabbix" target="_blank" style="display: flex; align-items: center; gap: 6px;">Zabbix
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+            </a>
+        </li>
+    </ul>
+</nav>

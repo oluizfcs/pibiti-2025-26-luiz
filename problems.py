@@ -14,7 +14,7 @@ class ZabbixService:
     }
 
     def __init__(self):
-        self.api = ZabbixAPI(url="localhost/zabbix")
+        self.api = ZabbixAPI(url=constants.ZABBIX_SERVER_IP + "/zabbix")
         self.api.login(token=constants.ZABBIX_API_KEY)
     
     def get_problems(self, hostids = None):
@@ -25,12 +25,14 @@ class ZabbixService:
         problems = self.api.problem.get(
             hostids=hostids,
             output=[
+                "eventid",
                 "objectid",
                 "name",
                 "severity",
                 "clock",
                 "acknowledged"
             ],
+            selectAcknowledges="extend",
             sortfield=["eventid"],
             sortorder="DESC",
             source=0, # triggers only
@@ -40,6 +42,18 @@ class ZabbixService:
         self._add_hostnames(problems)
         
         return problems
+
+    def get_problem_history(self, trigger_id):
+        events = self.api.event.get(
+            objectids=[trigger_id],
+            source=0, # triggers
+            output=["eventid", "clock", "value", "severity"],
+            selectAcknowledges="extend",
+            sortfield=["clock"],
+            sortorder="DESC",
+            limit=20
+        )
+        return events
     
     def get_hosts_summary(self):
         hosts = self.api.host.get(output=["status", "name"])

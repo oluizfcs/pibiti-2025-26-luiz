@@ -1,64 +1,105 @@
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, Request, Query
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from fastapi.templating import Jinja2Templates
 from problems import ZabbixService
 from gemini_model import GeminiModel
 from cache_manager import CacheManager
+from typing import List
 import json
+
+from schemas import HostSummaryModel, AIResponseModel
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
-async def read_index():
-    return FileResponse('static/index.html')
+templates = Jinja2Templates(directory="templates")
 
-@app.get("/hosts")
-async def read_hosts():
-    return FileResponse('static/hosts.html')
+@app.get("/", response_class=HTMLResponse)
+async def read_index(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="pages/index.html"
+    )
 
-@app.get("/hosts_summary")
-async def get_hosts_summary():
-    return ZabbixService().get_hosts_summary()
+@app.get("/hosts", response_class=HTMLResponse)
+async def read_hosts(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="pages/hosts.html"
+    )
 
-class FetchProblemsRequest(BaseModel):
-    new_response: bool | None = False
+@app.get("/problems", response_class=HTMLResponse)
+async def read_problems(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="pages/problems.html"
+    )
+
+@app.get("/termos", response_class=HTMLResponse)
+async def read_termos(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="pages/termos.html"
+    )
+
+@app.get("/problems_list")
+async def get_problems_list():
+    return ZabbixService().get_problems()
+
+@app.get("/problem/{trigger_id}/history")
+async def get_problem_history(trigger_id: str):
+    return ZabbixService().get_problem_history(trigger_id)
+
+@app.get("/problem/{trigger_id}/explain", response_model=AIResponseModel)
+async def explain_problem(trigger_id: str):
+    cache_manager = CacheManager(f"explain_{trigger_id}")
+    cached_response = cache_manager.get()
     
+    if cached_response is not None:
+        return AIResponseModel(response=cached_response, type="cached")
+    
+    problems = ZabbixService().get_problems()
+    target_problem = next((p for p in problems if p["objectid"] == trigger_id), None)
+    
+    if not target_problem:
+        return AIResponseModel(response="Problema não encontrado ou já resolvido.", type="new")
+        
+    prompt = (
+        f"Explique o seguinte problema identificado na infraestrutura evitando termos técnicos. Problema: {json.dumps(target_problem)}"
+    )
+    new_response_text = GeminiModel().generate(prompt)
+    cache_manager.set(new_response_text)
+    return AIResponseModel(response=new_response_text, type="new")
 
-@app.post("/problems")
-async def get_status(request: FetchProblemsRequest):
-
+@app.get("/problems/all", response_model=AIResponseModel)
+async def get_status(new_response: bool = Query(False)):
     cache_manager = CacheManager()
     cached_response = cache_manager.get()
     
-    if cached_response != None and not request.new_response:
-        return { "response": cached_response, "type": "cached"}
+    if cached_response != None and not new_response:
+        return AIResponseModel(response=cached_response, type="cached")
     
     problems = ZabbixService().get_problems()
-
     prompt = f"Explique a situação da infraestrutura evitando termos técnicos. Problemas: {json.dumps(problems)}"
-
-    new_response = GeminiModel().generate(prompt)
+    new_response_text = GeminiModel().generate(prompt)
     
-    cache_manager.set(new_response)
-    return {"response": new_response, "type": "new" }
+    cache_manager.set(new_response_text)
+    return AIResponseModel(response=new_response_text, type="new")
 
-@app.get("/problems/{hostid}")
-async def get_host_problems(hostid):
+
+@app.get("/problems/{hostid}", response_model=AIResponseModel)
+async def get_host_problems(hostid: str):
     cache_manager = CacheManager(hostid)
     cached_response = cache_manager.get()
     
     if cached_response != None:
-        return {"response": cached_response}
+        return AIResponseModel(response=cached_response, type="cached")
     
     problems = ZabbixService().get_problems(hostid)
-    
     prompt = f"Explique a situação do host evitando termos técnicos. Problemas: {json.dumps(problems)}"
+    new_response_text = GeminiModel().generate(prompt)
     
-    new_response = GeminiModel().generate(prompt)
-    
-    cache_manager.set(new_response)
-    
-    return {"response": new_response}
+    cache_manager.set(new_response_text)
+    return AIResponseModel(response=new_response_text, type="new")
+
+@app.get("/hosts_summary", response_model=List[HostSummaryModel])
+async def get_hosts_summary():
+    return ZabbixService().get_hosts_summary()

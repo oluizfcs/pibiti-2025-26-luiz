@@ -40,21 +40,41 @@ body {
     letter-spacing: 0.5px;
 }
 
-.host-table tbody tr {
-    font-weight: bold;
+.clickable-tr {
     cursor: pointer;
 }
 
-.host-table tbody tr:hover {
+.clickable-tr:hover {
     filter: brightness(0.85);
 }
 
-.severity-0 { background-color: hsl(199, 16%, 80%); }
-.severity-1 { background-color: hsl(224, 100%, 88%); }
-.severity-2 { background-color: hsl(40, 100%, 82%); }
-.severity-3 { background-color: hsl(26, 100%, 82%); }
-.severity-4 { background-color: hsl(12, 77%, 78%); }
-.severity-5 { background-color: hsl(0, 72%, 77%); }
+.host-table tbody tr {
+    font-weight: bold;
+}
+
+.severity-0 {
+    background-color: hsl(199, 16%, 80%);
+}
+
+.severity-1 {
+    background-color: hsl(224, 100%, 88%);
+}
+
+.severity-2 {
+    background-color: hsl(40, 100%, 82%);
+}
+
+.severity-3 {
+    background-color: hsl(26, 100%, 82%);
+}
+
+.severity-4 {
+    background-color: hsl(12, 77%, 78%);
+}
+
+.severity-5 {
+    background-color: hsl(0, 72%, 77%);
+}
 
 nav {
     background-color: var(--card-background);
@@ -128,7 +148,7 @@ nav a.active {
     background-color: var(--card-background);
     border-radius: 12px;
     border: 1px solid var(--card-border);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
 .problem-stat {
@@ -157,45 +177,46 @@ nav a.active {
     letter-spacing: 0.5px;
 }
 
-.summary-card {
+.card {
     background-color: var(--card-background);
     border-radius: 12px;
     border: 1px solid var(--card-border);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
     padding: 30px;
     margin-top: 20px;
     color: #333;
     line-height: 1.7;
 }
 
-.summary-card p {
+.card p {
     margin-bottom: 16px;
 }
 
-.summary-card p:last-child {
+.card p:last-child {
     margin-bottom: 0;
 }
 
-.summary-card ul,
-.summary-card ol {
+.card ul,
+.card ol {
     margin-bottom: 16px;
     padding-left: 20px;
 }
 
-.summary-card li {
+.card li {
     margin-bottom: 8px;
 }
 
-.summary-card strong,
-.summary-card b {
+.card strong,
+.card b {
     color: var(--highlight-color);
 }
 
 dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
 }
+
 dialog {
-  border: none;
-  border-radius: 8px;
-  padding: 2rem;
+    border: none;
+    border-radius: 8px;
+    padding: 2rem;
 }

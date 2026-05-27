@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="problems-container" class="card">
+    Carregando lista de problemas...
+</section>
+
+<style>
+    .problem-row {
+        transition: background-color 0.3s ease;
+    }
+
+    .chevron-icon {
+        display: inline-block;
+        transition: transform 0.2s ease;
+        margin-right: 8px;
+        font-size: 12px;
+        color: #495057;
+    }
+
+    .problem-row.expanded .chevron-icon {
+        transform: rotate(90deg);
+    }
+
+    .detail-content {
+        align-self: center;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 22px;
+        margin: 8px 0;
+        border: 1px solid #eef0f5;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        color: #2d3748;
+        width: 92%;
+        margin: 0 auto 20px;
+    }
+
+    .detail-section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #4a5568;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #edf2f7;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 24px;
+        margin: 15px 0 10px 0;
+        border-left: 2px solid #e2e8f0;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 16px;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -31px;
+        top: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px currentColor;
+    }
+
+    .timeline-dot.problem {
+        color: #e53e3e;
+        background-color: #e53e3e;
+    }
+
+    .timeline-dot.ok {
+        color: #38a169;
+        background-color: #38a169;
+    }
+
+    .timeline-info {
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .timeline-date {
+        font-size: 12px;
+        color: #718096;
+        font-weight: bold;
+    }
+
+    .timeline-detail {
+        font-size: 13px;
+        color: #4a5568;
+        margin-top: 4px;
+    }
+
+    .ack-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 12px 0;
+    }
+
+    .ack-card {
+        background-color: #f7fafc;
+        border-left: 4px solid #1100ff;
+        padding: 14px 18px;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .ack-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #718096;
+        margin-bottom: 6px;
+    }
+
+    .ack-user {
+        font-weight: bold;
+        color: #1100ff;
+    }
+
+    .ack-message {
+        font-size: 14px;
+        color: #2d3748;
+        font-style: italic;
+        margin-top: 4px;
+        line-height: 1.5;
+    }
+</style>
+
+<script src="static/js/problems.js"></script>
+{% endblock %}

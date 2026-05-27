@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="problems-overview" class="problems-overview" style="display: none;">
+        <div class="problem-stat">
+            <span id="total-problems-count" class="stat-big">0</span>
+            <span class="stat-label">Problemas</span>
+        </div>
+        <div class="problem-stat">
+            <span id="unack-problems-count" class="stat-big highlight-red">0</span>
+            <span class="stat-label" style="text-align: center;">Problemas<br>Não Reconhecidos</span>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+        <button class="btn-check" onclick="updateText()">Verificar infraestrutura</button>
+    </div>
+
+    <section id="infrastructure-summary" class="card" style="display: none;">
+    </section>
+    
+    <script src="static/js/index.js"></script>
+{% endblock %}
