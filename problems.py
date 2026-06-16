@@ -32,7 +32,6 @@ class ZabbixService:
                 "clock",
                 "acknowledged"
             ],
-            selectAcknowledges="extend",
             sortfield=["eventid"],
             sortorder="DESC",
             source=0, # triggers only
@@ -40,7 +39,6 @@ class ZabbixService:
         )
         
         self._add_hostnames(problems)
-        
         return problems
 
     def get_problem_history(self, trigger_id):
@@ -51,14 +49,24 @@ class ZabbixService:
             selectAcknowledges="extend",
             sortfield=["clock"],
             sortorder="DESC",
-            limit=20
+            limit=5
         )
         return events
     
     def get_hosts_summary(self):
-        hosts = self.api.host.get(output=["status", "name"])
-        enabled_hosts = {h["hostid"]: {"hostid": h["hostid"], "name": h["name"], "problem_count": 0, "problem_count_unacknowledged": 0, "highest_severity": 0} for h in hosts if h["status"] == "0"}
-        
+        hosts = self.api.host.get(output=["status", "name"], selectHostGroups=["groupid", "name"])
+        enabled_hosts = {
+            h["hostid"]: {
+                "hostid": h["hostid"], 
+                "name": h["name"], 
+                "hostgroups": ", ".join([g["name"] for g in h["hostgroups"]]), 
+                "problem_count": 0, 
+                "problem_count_unacknowledged": 0, 
+                "highest_severity": 0
+            } 
+            for h in hosts if h["status"] == "0"
+        }
+
         hosts_interfaces = self.api.hostinterface.get(output=["hostid", "ip", "port", "available"])
         
         for interface in hosts_interfaces:
@@ -120,7 +128,8 @@ class ZabbixService:
         for problem in problems:
             objectids.append(problem["objectid"])
             problem["acknowledged"] = "no" if problem["acknowledged"] != "1" else "yes"
-            problem["duration"] = self._convert_timestamp_to_string(int(problem.pop("clock")))
+            problem["clock"] = int(problem["clock"])
+            problem["duration"] = self._convert_timestamp_to_string(problem["clock"])
             problem["severity"] +=  f" out of 5 ({ZabbixService.severities[problem["severity"]]})"
             
         triggers = self.api.trigger.get(

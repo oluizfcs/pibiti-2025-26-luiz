@@ -19,25 +19,19 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
     return templates.TemplateResponse(
-        request=request, name="pages/index.html"
+        request=request, name="pages/index.html", context={"title": "Resumo - Estado da infraestrutura"}
     )
 
 @app.get("/hosts", response_class=HTMLResponse)
 async def read_hosts(request: Request):
     return templates.TemplateResponse(
-        request=request, name="pages/hosts.html"
+        request=request, name="pages/hosts.html", context={"title": "Hosts - Estado da infraestrutura"}
     )
 
 @app.get("/problems", response_class=HTMLResponse)
 async def read_problems(request: Request):
     return templates.TemplateResponse(
-        request=request, name="pages/problems.html"
-    )
-
-@app.get("/termos", response_class=HTMLResponse)
-async def read_termos(request: Request):
-    return templates.TemplateResponse(
-        request=request, name="pages/termos.html"
+        request=request, name="pages/problems.html", context={"title": "Problemas - Estado da infraestrutura"}
     )
 
 @app.get("/problems_list")
@@ -63,7 +57,7 @@ async def explain_problem(trigger_id: str):
         return AIResponseModel(response="Problema não encontrado ou já resolvido.", type="new")
         
     prompt = (
-        f"Explique o seguinte problema identificado na infraestrutura evitando termos técnicos. Problema: {json.dumps(target_problem)}"
+        f"Houve um problema na infraestrutura de TI, explique-o brevemente evitando termos técnicos. Problema: {json.dumps(target_problem)}"
     )
     new_response_text = GeminiModel().generate(prompt)
     cache_manager.set(new_response_text)

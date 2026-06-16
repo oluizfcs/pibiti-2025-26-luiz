@@ -1,23 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div id="problems-overview" class="problems-overview" style="display: none;">
-        <div class="problem-stat">
-            <span id="total-problems-count" class="stat-big">0</span>
-            <span class="stat-label">Problemas</span>
+<section class="card">
+    <h1>Resumo do estado da infraestrutura</h1>
+    <main id="main-content">
+        <div id="problems-overview">
+            <p>Consultando informações...</p>
         </div>
-        <div class="problem-stat">
-            <span id="unack-problems-count" class="stat-big highlight-red">0</span>
-            <span class="stat-label" style="text-align: center;">Problemas<br>Não Reconhecidos</span>
-        </div>
-    </div>
+    </main>
+</section>
 
-    <div style="text-align: center; margin-bottom: 30px;">
-        <button class="btn-check" onclick="updateText()">Verificar infraestrutura</button>
-    </div>
+<div style="text-align: center; display: none;">
+    <button class="btn-check" id="explain-btn">Explicar infraestrutura</button>
+</div>
 
-    <section id="infrastructure-summary" class="card" style="display: none;">
-    </section>
-    
-    <script src="static/js/index.js"></script>
+<section id="ai-summary-section" class="card" style="display: none;">
+    <h2>Análise detalhada da inteligência artificial:</h2>
+
+    <div id="infrastructure-summary" aria-live="polite" aria-busy="false">
+    </div>
+</section>
+
+<script src="static/js/index.js"></script>
 {% endblock %}

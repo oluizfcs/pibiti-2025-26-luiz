@@ -1,4 +1,5 @@
-const hostsSection = document.getElementById("hosts-summary");
+const hostsContainer = document.getElementById("hosts");
+const dialog = document.getElementById("explanation-dialog");
 
 async function updateHostsSummary() {
     try {
@@ -6,100 +7,130 @@ async function updateHostsSummary() {
         const hosts = await response.json();
 
         if (!hosts || hosts.length === 0) {
-            hostsSection.textContent = "Nenhum host encontrado.";
+            hostsContainer.textContent = "Nenhum host encontrado.";
             return;
         }
 
         const table = document.createElement("table");
-        table.className = "host-table";
-
-        const thead = document.createElement("thead");
-        thead.innerHTML = `
-            <tr>
-                <th>Host</th>
-                <th>Problemas</th>
-                <th>Problemas não reconhecidos</th>
-                <th>Gravidade</th>
-            </tr>
+        table.innerHTML = `
+            <caption>Lista de Hosts</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Host</th>
+                    <th scope="col">Grupos</th>
+                    <th scope="col">Problemas</th>
+                    <th scope="col">Gravidade</th>
+                    <th scope="col">Ação</th>
+                </tr>
+            </thead>
         `;
-        table.append(thead);
 
         const tbody = document.createElement("tbody");
 
         hosts.forEach(host => {
             const tr = document.createElement("tr");
-            tr.classList.add("clickable-tr");
+            const trDetails = document.createElement("tr");
+            const tdDetails = document.createElement("td");
 
+            trDetails.style.display = "none";
+            tdDetails.colSpan = 5;
             tr.classList.add(`severity-${host.highest_severity}`);
 
+            let severityName = "";
             switch (host.highest_severity) {
                 case 0:
-                    host.highest_severity = 'Não classificado';
+                    severityName = 'Não classificado';
                     break;
                 case 1:
-                    host.highest_severity = 'Informação';
+                    severityName = 'Informação';
                     break;
                 case 2:
-                    host.highest_severity = 'Aviso';
+                    severityName = 'Aviso';
                     break;
                 case 3:
-                    host.highest_severity = 'Média';
+                    severityName = 'Média';
                     break;
                 case 4:
-                    host.highest_severity = 'Alta';
+                    severityName = 'Alta';
                     break;
                 case 5:
-                    host.highest_severity = 'Desastre';
+                    severityName = 'Desastre';
                     break;
             }
 
             tr.innerHTML = `
-            <td>${host.name}</td>
-            <td>${host.problem_count}</td>
-            <td>${host.problem_count_unacknowledged}</td>
-            <td>${host.highest_severity}</td>
+                <td lang="">${host.name}</td>
+                <td lang="">${host.hostgroups}</td>
+                <td style="text-align: center;">${host.problem_count}</td>
+                <td style="text-align: center;">${severityName}</td>
+                <td style="text-align: center;">
+                    <button class="btn-toggle"
+                            aria-haspopup="dialog">
+                        <!-- License: MIT. Made by radix-ui: https://github.com/radix-ui/icons -->
+                        <svg alt="" aria-label="Explicar problema" width="32px" height="32px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z"
+                            fill="#fff"
+                        />
+                        </svg>
+                    </button>
+                </td>
             `;
 
-            tbody.append(tr);
+            const openDialogBtn = tr.querySelector(".btn-toggle");
+            openDialogBtn.title = "Explicar problema";
+            const explanationBox = document.getElementById("explanation-box");
 
-            const modal = document.getElementById("modal");
-            const hostSummaryDiv = modal.querySelector("div");
+            openDialogBtn.addEventListener("click", async () => {
 
-            modal.classList.add("card");
-            modal.style.maxWidth = "50%";
-            modal.style.maxHeight = "70%";
+                dialog.showModal();
+                dialog.querySelector(".btn-check").focus();
+                explanationBox.innerHTML = `Carregando explicação...`;
+// return;
+                try {
+                    const response = await fetch("/problems/" + host.hostid);
+                    const data = await response.json();
+await new Promise(resolve => setTimeout(resolve, 5000));
+                    explanationBox.innerHTML = marked.parse(data.response);
 
-            tr.addEventListener("click", () => {
-                hostSummaryDiv.textContent = "Analisando situação...";
-
-                getHostExplanation(hostSummaryDiv, host.hostid);
-
-                modal.querySelector("h1").textContent = host.name;
-                if (host.interface) {
-                    modal.querySelector("p").innerHTML = `<b>IP:</b> ${host.interface.ip}`;
-                    modal.querySelectorAll("p")[1].innerHTML = `<b>Porta:</b> ${host.interface.port}`;
+                } catch (error) {
+                    explanationBox.innerHTML = `<p style="color: #e53e3e; font-style: italic;">Erro ao obter a análise da inteligência artificial.</p>`;
+                    console.error("AI Explanation fetch failed:", error);
                 }
-
-                modal.showModal();
             });
+
+            tbody.append(tr);
         });
 
         table.append(tbody);
 
-        hostsSection.innerHTML = "";
-        hostsSection.append(table);
+        hostsContainer.innerHTML = "";
+        hostsContainer.append(table);
     } catch (error) {
-        hostsSection.textContent = "Erro ao carregar o resumo dos hosts.";
-        console.log(error);
+        hostsContainer.innerHTML = `
+            <p class="overview-text status-danger">Não foi possível comunicar com o sistema de monitoramento Zabbix. Tente novamente mais tarde.</p>
+        `;
+        console.error("Error updating hosts summary:", error);
     }
 }
 
-async function getHostExplanation(element, hostid) {
-    const response = await fetch("/problems/" + hostid);
+dialog.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
 
-    const data = await response.json();
+    const buttons = dialog.querySelectorAll("button");
+    const firstButton = buttons[0];
+    const lastButton = buttons[buttons.length - 1];
 
-    element.innerHTML = marked.parse(data.response);
-}
+    if (e.shiftKey && document.activeElement === firstButton) {
+        lastButton.focus();
+        e.preventDefault();
+    } else if (!e.shiftKey && document.activeElement === lastButton) {
+        firstButton.focus();
+        e.preventDefault();
+    }
+});
+
 
 updateHostsSummary();

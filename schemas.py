@@ -10,6 +10,7 @@ class HostInterfaceModel(BaseModel):
 class HostSummaryModel(BaseModel):
     hostid: str
     name: str
+    hostgroups: str
     problem_count: int
     problem_count_unacknowledged: int
     highest_severity: int

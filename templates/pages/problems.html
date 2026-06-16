@@ -1,152 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section id="problems-container" class="card">
-    Carregando lista de problemas...
+<section class="card">
+    <h1>Problemas</h1>
+    <p>Os problemas são todos os incidentes e falhas ativos capturados pelo sistema de monitoramento Zabbix.</p>
 </section>
 
-<style>
-    .problem-row {
-        transition: background-color 0.3s ease;
-    }
+<main class="card" id="main-content">
+    <div id="problems">
+        Carregando lista de problemas...
+    </div>
+</main>
 
-    .chevron-icon {
-        display: inline-block;
-        transition: transform 0.2s ease;
-        margin-right: 8px;
-        font-size: 12px;
-        color: #495057;
-    }
-
-    .problem-row.expanded .chevron-icon {
-        transform: rotate(90deg);
-    }
-
-    .detail-content {
-        align-self: center;
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 22px;
-        margin: 8px 0;
-        border: 1px solid #eef0f5;
-        border-radius: 0 0 20px 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        color: #2d3748;
-        width: 92%;
-        margin: 0 auto 20px;
-    }
-
-    .detail-section-title {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #4a5568;
-        margin-top: 24px;
-        margin-bottom: 12px;
-        padding-bottom: 6px;
-        border-bottom: 2px solid #edf2f7;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .detail-section-title:first-of-type {
-        margin-top: 0;
-    }
-
-    .timeline {
-        position: relative;
-        padding-left: 24px;
-        margin: 15px 0 10px 0;
-        border-left: 2px solid #e2e8f0;
-    }
-
-    .timeline-item {
-        position: relative;
-        margin-bottom: 16px;
-    }
-
-    .timeline-item:last-child {
-        margin-bottom: 0;
-    }
-
-    .timeline-dot {
-        position: absolute;
-        left: -31px;
-        top: 4px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid #fff;
-        box-shadow: 0 0 0 2px currentColor;
-    }
-
-    .timeline-dot.problem {
-        color: #e53e3e;
-        background-color: #e53e3e;
-    }
-
-    .timeline-dot.ok {
-        color: #38a169;
-        background-color: #38a169;
-    }
-
-    .timeline-info {
-        font-size: 14px;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .timeline-date {
-        font-size: 12px;
-        color: #718096;
-        font-weight: bold;
-    }
-
-    .timeline-detail {
-        font-size: 13px;
-        color: #4a5568;
-        margin-top: 4px;
-    }
-
-    .ack-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin: 12px 0;
-    }
-
-    .ack-card {
-        background-color: #f7fafc;
-        border-left: 4px solid #1100ff;
-        padding: 14px 18px;
-        border-radius: 0 8px 8px 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    }
-
-    .ack-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 12px;
-        color: #718096;
-        margin-bottom: 6px;
-    }
-
-    .ack-user {
-        font-weight: bold;
-        color: #1100ff;
-    }
-
-    .ack-message {
-        font-size: 14px;
-        color: #2d3748;
-        font-style: italic;
-        margin-top: 4px;
-        line-height: 1.5;
-    }
-</style>
+<dialog id="explanation-dialog" closedby="any" aria-labelledby="dialog-title">
+    <div id="dialog-header">
+        <span id="dialog-title">Explicação do problema</span>
+        <button aria-hidden="true" aria-label="Fechar explicação" title="Fechar explicação" class="btn-close" commandfor="explanation-dialog" command="close"><!-- License: MIT. Made by Kenan Gundogan: https://github.com/kenangundogan/fontisto --><svg width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.48 3.512c-2.172-2.171-5.172-3.514-8.486-3.514-6.628 0-12.001 5.373-12.001 12.001 0 3.314 1.344 6.315 3.516 8.487 2.172 2.171 5.172 3.514 8.486 3.514 6.628 0 12.001-5.373 12.001-12.001 0-3.314-1.344-6.315-3.516-8.487zm-1.542 15.427c-1.777 1.777-4.232 2.876-6.943 2.876-5.423 0-9.819-4.396-9.819-9.819 0-2.711 1.099-5.166 2.876-6.943 1.777-1.777 4.231-2.876 6.942-2.876 5.422 0 9.818 4.396 9.818 9.818 0 2.711-1.099 5.166-2.876 6.942z"/><path d="m13.537 12 3.855-3.855c.178-.194.287-.453.287-.737 0-.603-.489-1.091-1.091-1.091-.285 0-.544.109-.738.287l.001-.001-3.855 3.855-3.855-3.855c-.193-.178-.453-.287-.737-.287-.603 0-1.091.489-1.091 1.091 0 .285.109.544.287.738l-.001-.001 3.855 3.855-3.855 3.855c-.218.2-.354.486-.354.804 0 .603.489 1.091 1.091 1.091.318 0 .604-.136.804-.353l.001-.001 3.855-3.855 3.855 3.855c.2.218.486.354.804.354.603 0 1.091-.489 1.091-1.091 0-.318-.136-.604-.353-.804l-.001-.001z"/></svg>
+    </div>
+    </button>
+    <div id="explanation-box" aria-live="polite"></div>
+    <button class="btn-check" commandfor="explanation-dialog" command="close">Fechar Explicação</button>
+</dialog>
 
 <script src="static/js/problems.js"></script>
 {% endblock %}

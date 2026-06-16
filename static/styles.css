@@ -1,15 +1,41 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 :root {
     --bg-color: #d2d8e9;
     --text-color: #1a1a1a;
     --highlight-color: #1100ff;
     --card-background: #f8f9fa;
-    --card-border: #eaeaea;
+    --card-border: #00000080;
 }
 
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    text-align: justify;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
@@ -17,38 +43,48 @@ body {
     color: var(--text-color);
 }
 
-.host-table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
+h1 {
+    margin-top: 0px;
 }
 
-.host-table th,
-.host-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--card-border);
-    text-align: center;
+:focus {
+  outline: none;
 }
 
-.host-table th {
-    background-color: transparent;
-    color: #495057;
-    border-bottom: 2px solid #dee2e6;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 3px solid var(--highlight-color); 
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px var(--highlight-color-rgb);
+  transition: outline-offset 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
-.clickable-tr {
-    cursor: pointer;
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
-.clickable-tr:hover {
-    filter: brightness(0.85);
+table {
+  table-layout: fixed;
+  width: 100%;
+  margin: 10px auto;
+  border-collapse: collapse;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
 }
 
-.host-table tbody tr {
+th,
+td {
+  padding: 0.5em;
+  margin: 5px 0;
+}
+
+caption {
+    font-size: 2rem;
     font-weight: bold;
 }
 
@@ -82,6 +118,8 @@ nav {
     margin-bottom: 30px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--card-border);
+    width: fit-content;
+    margin: auto;
 }
 
 nav ul {
@@ -139,42 +177,50 @@ nav a.active {
     transform: translateY(1px);
 }
 
-.problems-overview {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    margin: 30px 0;
-    padding: 30px;
-    background-color: var(--card-background);
-    border-radius: 12px;
-    border: 1px solid var(--card-border);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+.btn-toggle {
+    display: inline-block;
+    padding: 6px 12px;
+    font-weight: 600;
+    color: white;
+    background-color: var(--highlight-color);
+    border: 1px solid var(--highlight-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.problem-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.btn-close {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 
-.stat-big {
-    font-size: 56px;
-    font-weight: 800;
-    color: #495057;
-    line-height: 1;
+.overview-text {
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    border-left: 5px solid;
 }
 
-.stat-big.highlight-red {
-    color: #e45959;
+.status-success {
+    background-color: #f0fdf4;
+    color: #14532d;
+    border-left-color: #16a34a;
 }
 
-.stat-label {
-    margin-top: 12px;
-    font-size: 15px;
-    color: #6c757d;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+.status-warning {
+    background-color: #fff7ed;
+    color: #7c2d12;
+    border-left-color: #ea580c;
+}
+
+.status-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left-color: #dc2626;
 }
 
 .card {
@@ -184,6 +230,7 @@ nav a.active {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
     padding: 30px;
     margin-top: 20px;
+    margin-bottom: 20px;
     color: #333;
     line-height: 1.7;
 }
@@ -206,17 +253,30 @@ nav a.active {
     margin-bottom: 8px;
 }
 
-.card strong,
-.card b {
-    color: var(--highlight-color);
-}
-
-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-}
-
 dialog {
     border: none;
-    border-radius: 8px;
-    padding: 2rem;
+    border-radius: 10px;
+    max-width: 650px;
+}
+
+@media (width <= 768px) {
+    dialog {
+        width: 100%;
+    }
+}
+
+#dialog-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#dialog-title {
+    font-size: large;
+    font-weight: bold;
+}
+
+#explanation-box {
+    margin: 1rem 0;
 }
