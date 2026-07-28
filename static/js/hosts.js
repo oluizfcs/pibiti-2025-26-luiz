@@ -59,8 +59,8 @@ async function updateHostsSummary() {
             }
 
             tr.innerHTML = `
-                <td lang="">${host.name}</td>
-                <td lang="">${host.hostgroups}</td>
+                <td >${host.name}</td>
+                <td >${host.hostgroups}</td>
                 <td style="text-align: center;">${host.problem_count}</td>
                 <td style="text-align: center;">${severityName}</td>
                 <td style="text-align: center;">
@@ -88,11 +88,11 @@ async function updateHostsSummary() {
                 dialog.showModal();
                 dialog.querySelector(".btn-check").focus();
                 explanationBox.innerHTML = `Carregando explicação...`;
-// return;
+                // return;
                 try {
                     const response = await fetch("/problems/" + host.hostid);
                     const data = await response.json();
-await new Promise(resolve => setTimeout(resolve, 5000));
+                    await new Promise(resolve => setTimeout(resolve, 5000));
                     explanationBox.innerHTML = marked.parse(data.response);
 
                 } catch (error) {

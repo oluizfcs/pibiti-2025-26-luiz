@@ -53,8 +53,8 @@ async function updateProblems() {
             else if (translatedSeverity.includes("Disaster")) translatedSeverity = "Desastre";
 
             tr.innerHTML = `
-                <td lang="">${problem.affected_hosts || "Desconhecido"}</td>
-                <td lang="" style="text-align: left;">${problem.name}</td>
+                <td >${problem.affected_hosts || "Desconhecido"}</td>
+                <td  style="text-align: left;">${problem.name}</td>
                 <td style="text-align: center;">${translatedSeverity}</td>
                 <td style="text-align: center;">${dateFns.formatDistanceToNow(new Date(problem.clock * 1000), { locale: dateFns.locale.pt })}</td>
                 <td style="text-align: center;">${ackBadge}</td>
@@ -86,11 +86,11 @@ async function updateProblems() {
                 dialog.showModal();
                 dialog.querySelector(".btn-check").focus();
                 explanationBox.innerHTML = `Carregando explicação...`;
-// return;
+                // return;
                 try {
                     const response = await fetch(`/problem/${problem.objectid}/explain`);
                     const data = await response.json();
-await new Promise(resolve => setTimeout(resolve, 5000));
+                    await new Promise(resolve => setTimeout(resolve, 5000));
                     explanationBox.innerHTML = marked.parse(data.response);
 
                 } catch (error) {
