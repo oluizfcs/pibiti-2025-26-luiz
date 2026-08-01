@@ -59,11 +59,11 @@ async function updateHostsSummary() {
             }
 
             tr.innerHTML = `
-                <td >${host.name}</td>
-                <td >${host.hostgroups}</td>
-                <td style="text-align: center;">${host.problem_count}</td>
-                <td style="text-align: center;">${severityName}</td>
-                <td style="text-align: center;">
+                <td data-label="Host">${host.name}</td>
+                <td data-label="Grupos">${host.hostgroups}</td>
+                <td data-label="Problemas" style="text-align: center;">${host.problem_count}</td>
+                <td data-label="Gravidade" style="text-align: center;">${severityName}</td>
+                <td data-label="Ação" style="text-align: center;">
                     <button class="btn-toggle"
                             aria-haspopup="dialog">
                         <!-- License: MIT. Made by radix-ui: https://github.com/radix-ui/icons -->

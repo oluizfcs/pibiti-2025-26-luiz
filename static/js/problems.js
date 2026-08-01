@@ -53,13 +53,13 @@ async function updateProblems() {
             else if (translatedSeverity.includes("Disaster")) translatedSeverity = "Desastre";
 
             tr.innerHTML = `
-                <td >${problem.affected_hosts || "Desconhecido"}</td>
-                <td  style="text-align: left;">${problem.name}</td>
-                <td style="text-align: center;">${translatedSeverity}</td>
-                <td style="text-align: center;">${dateFns.formatDistanceToNow(new Date(problem.clock * 1000), { locale: dateFns.locale.pt })}</td>
-                <td style="text-align: center;">${ackBadge}</td>
-                <td class="history" style="text-align: center;"></td>
-                <td style="text-align: center;">
+                <td data-label="Host">${problem.affected_hosts || "Desconhecido"}</td>
+                <td data-label="Problema" style="text-align: left;">${problem.name}</td>
+                <td data-label="Gravidade" style="text-align: center;">${translatedSeverity}</td>
+                <td data-label="Duração" style="text-align: center;">${dateFns.formatDistanceToNow(new Date(problem.clock * 1000), { locale: dateFns.locale.pt })}</td>
+                <td data-label="Reconhecido" style="text-align: center;">${ackBadge}</td>
+                <td data-label="Aconteceu antes?" class="history" style="text-align: center;"></td>
+                <td data-label="Ação" style="text-align: center;">
                     <button class="btn-toggle"
                             aria-haspopup="dialog">
                         <!-- License: MIT. Made by radix-ui: https://github.com/radix-ui/icons -->

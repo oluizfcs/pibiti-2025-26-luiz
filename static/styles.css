@@ -83,6 +83,49 @@ td {
   margin: 5px 0;
 }
 
+@media screen and (max-width: 768px) {
+    .host-table, 
+    .host-table thead, 
+    .host-table tbody, 
+    .host-table th, 
+    .host-table td, 
+    .host-table tr {
+        display: block;
+    }
+
+    .host-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .host-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+    }
+
+    .host-table td, 
+    .host-table th[scope="row"] {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+    }
+
+    .host-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        color: #475569;
+    }
+}
+
 caption {
     font-size: 2rem;
     font-weight: bold;
