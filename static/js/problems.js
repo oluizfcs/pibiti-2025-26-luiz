@@ -12,7 +12,6 @@ async function updateProblems() {
         }
 
         const table = document.createElement("table");
-        table.className = "host-table";
 
         table.innerHTML = `
             <caption>Lista de Problemas</caption>
@@ -54,12 +53,12 @@ async function updateProblems() {
 
             tr.innerHTML = `
                 <td data-label="Host">${problem.affected_hosts || "Desconhecido"}</td>
-                <td data-label="Problema" style="text-align: left;">${problem.name}</td>
-                <td data-label="Gravidade" style="text-align: center;">${translatedSeverity}</td>
-                <td data-label="Duração" style="text-align: center;">${dateFns.formatDistanceToNow(new Date(problem.clock * 1000), { locale: dateFns.locale.pt })}</td>
-                <td data-label="Reconhecido" style="text-align: center;">${ackBadge}</td>
-                <td data-label="Aconteceu antes?" class="history" style="text-align: center;"></td>
-                <td data-label="Ação" style="text-align: center;">
+                <td data-label="Problema">${problem.name}</td>
+                <td data-label="Gravidade">${translatedSeverity}</td>
+                <td data-label="Duração">${dateFns.formatDistanceToNow(new Date(problem.clock * 1000), { locale: dateFns.locale.pt })}</td>
+                <td data-label="Reconhecido">${ackBadge}</td>
+                <td data-label="Aconteceu antes?" class="history"></td>
+                <td data-label="Ação">
                     <button class="btn-toggle"
                             aria-haspopup="dialog">
                         <!-- License: MIT. Made by radix-ui: https://github.com/radix-ui/icons -->
@@ -79,7 +78,6 @@ async function updateProblems() {
             loadProblemHistory(problem.objectid, tr.querySelector(".history"));
 
             const openDialogBtn = tr.querySelector(".btn-toggle");
-            openDialogBtn.title = "Explicar problema";
             const explanationBox = document.getElementById("explanation-box");
 
             openDialogBtn.addEventListener("click", async () => {

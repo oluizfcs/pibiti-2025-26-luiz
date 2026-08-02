@@ -36,7 +36,7 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    max-width: 800px;
+    max-width: 850px;
     margin: 0 auto;
     padding: 20px;
     background-color: var(--bg-color);
@@ -69,7 +69,6 @@ button:disabled {
 }
 
 table {
-  table-layout: fixed;
   width: 100%;
   margin: 10px auto;
   border-collapse: collapse;
@@ -77,56 +76,12 @@ table {
   border-bottom: 1px solid #999;
 }
 
-th,
 td {
-  padding: 0.5em;
-  margin: 5px 0;
-}
-
-@media screen and (max-width: 768px) {
-    .host-table, 
-    .host-table thead, 
-    .host-table tbody, 
-    .host-table th, 
-    .host-table td, 
-    .host-table tr {
-        display: block;
-    }
-
-    .host-table thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    .host-table tr {
-        margin-bottom: 15px;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #ffffff;
-    }
-
-    .host-table td, 
-    .host-table th[scope="row"] {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 10px;
-        border: none;
-        border-bottom: 1px solid #f1f5f9;
-        text-align: right;
-    }
-
-    .host-table td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        text-align: left;
-        color: #475569;
-    }
+    padding: 0.4rem 1rem;
 }
 
 caption {
+    width: 100%;
     font-size: 2rem;
     font-weight: bold;
 }
@@ -302,12 +257,6 @@ dialog {
     max-width: 650px;
 }
 
-@media (width <= 768px) {
-    dialog {
-        width: 100%;
-    }
-}
-
 #dialog-header {
     display: flex;
     width: 100%;
@@ -322,4 +271,76 @@ dialog {
 
 #explanation-box {
     margin: 1rem 0;
+}
+
+@media screen and (max-width: 768px) {
+    dialog {
+        width: 100%;
+    }
+
+    table, 
+    table thead, 
+    table tbody, 
+    table th, 
+    table td, 
+    table tr {
+        display: block;
+    }
+
+    table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    table tr {
+        margin-bottom: 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+    }
+
+    table td, 
+    table th {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+    }
+
+    table td {
+        hyphens: auto;
+    }
+
+    caption {
+        font-size: 1.5rem;
+        display: block;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        color: #475569;
+        margin-right: 1em;
+        hyphens: none;
+    }
+
+    body {
+        padding-bottom: 90px;
+    }
+}
+
+@media screen and (max-width: 370px) {
+        nav ul {
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 4px 8px;
+        gap: 4px;
+    }
 }
