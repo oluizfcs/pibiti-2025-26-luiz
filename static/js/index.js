@@ -1,6 +1,5 @@
 const overviewSection = document.getElementById("problems-overview");
 const aiSummarySection = document.getElementById("ai-summary-section");
-const textDiv = document.getElementById("infrastructure-summary");
 const explainBtn = document.getElementById("explain-btn");
 
 async function getResponse(newResponse) {
@@ -11,21 +10,18 @@ async function getResponse(newResponse) {
         return data.response
 
     } catch (error) {
-        textDiv.textContent = "Não foi possível analisar a infraestrutura no momento, tente novamente mais tarde.";
+        aiSummarySection.textContent = "Não foi possível analisar a infraestrutura no momento, tente novamente mais tarde.";
     }
 }
 
 async function updateText() {    
     response = await getResponse(false);
-    
-    aiSummarySection.style.display = "block";
-    textDiv.ariaBusy = false;
-    textDiv.innerHTML = marked.parse(response);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    aiSummarySection.innerHTML = "<h2>Análise detalhada da inteligência artificial:</h2>" + marked.parse(response);
 }
 
 explainBtn.addEventListener("click", () => {
-    explainBtn.disabled = true;
-    textDiv.ariaBusy = true;
+    aiSummarySection.textContent = "Carregando explicação...";
     updateText();
 });
 
@@ -75,6 +71,6 @@ async function updateProblemsOverview() {
     } catch (e) {
         console.error("Erro ao tentar ler o resumo de problemas:", e);
         overviewSection.innerHTML = `<p class="overview-text status-danger">Não foi possível carregar o resumo da infraestrutura neste momento.</p>`;
-        overviewSection.style.style.display = "block";
+        overviewSection.style.display = "block";
     }
 }

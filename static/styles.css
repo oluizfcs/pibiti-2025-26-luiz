@@ -221,6 +221,13 @@ nav a.active {
     border-left-color: #dc2626;
 }
 
+#ai-summary-section:empty {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+}
+
 .card {
     background-color: var(--card-background);
     border-radius: 12px;
